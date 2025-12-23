@@ -165,8 +165,17 @@ function isDateInPeriod(date, period) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const currentDate = new Date(date);
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const day = currentDate.getUTCDate();
+  const hours = currentDate.getUTCHours();
+  const hoursString = hours <= 12 ? hours : hours - 12;
+  const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+  const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+  const pmAm = Number(date.split('T')[1].slice(0, 2)) >= 12 ? 'PM' : 'AM';
+  return `${month}/${day}/${year}, ${hoursString}:${minutes}:${seconds} ${pmAm}`;
 }
 
 /**
@@ -181,8 +190,17 @@ function formatDate(/* date */) {
  * 12, 2023 => 10
  * 1, 2024 => 8
  */
-function getCountWeekendsInMonth(/* month, year */) {
-  throw new Error('Not implemented');
+function getCountWeekendsInMonth(month, year) {
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const daysArr = Array.from(
+    { length: daysInMonth },
+    (_, i) => new Date(year, month - 1, i + 1)
+  ).map((day) => day.getDay());
+  let count = 0;
+  daysArr.forEach((day) => {
+    if (day === 0 || day === 6) count += 1;
+  });
+  return count;
 }
 
 /**
